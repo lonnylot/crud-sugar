@@ -76,7 +76,9 @@ class Client {
       case 'GET':
       case 'HEAD': {
         if (is_array($data)) {
-          $uri = $uri->withQuery(http_build_query($data));
+          $query = http_build_query($data);
+          $query = preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D', $query); // NOTE: This replaces numeric indexes in arrays
+          $uri = $uri->withQuery($query);
           $data = null;
         }
         break;
