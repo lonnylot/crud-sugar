@@ -39,7 +39,7 @@ trait IsEndpoint {
     }
 
     if ($this->needsResourcePath('store')) {
-      $this->resourcePaths['store'] = $this->path.'/{'.$this->resourceKey.'}';
+      $this->resourcePaths['store'] = $this->path;
     }
 
     if ($this->needsResourcePath('show')) {
