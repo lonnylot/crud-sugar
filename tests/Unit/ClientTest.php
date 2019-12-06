@@ -6,6 +6,7 @@ use Exception;
 use Tests\TestCase;
 
 use CrudSugar\Client;
+use CrudSugar\Response;
 
 class ClientTest extends TestCase {
   public function testSetApiRequiresString() {
@@ -50,5 +51,16 @@ class ClientTest extends TestCase {
 
     // Then
     $this->assertEquals($this->getClient()->getBaseUrl(), $baseUrl);
+  }
+
+  public function testRequestReturnsResponse() {
+    // Given
+    $endpoint = uniqid();
+
+    // When
+    $response = $this->getClient()->request('GET', $endpoint);
+
+    // Then
+    $this->assertInstanceOf(Response::class, $response);
   }
 }

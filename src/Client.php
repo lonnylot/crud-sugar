@@ -92,9 +92,9 @@ class Client {
       $clientOptions['handler'] = $this->handler;
     }
 
-    $client = new GuzzleClient($clientOptions);
+    $guzzleClient = new GuzzleClient($clientOptions);
 
-    return $client->request($method, $uri, [
+    $guzzleResponse = $guzzleClient->request($method, $uri, [
       'headers' => [
         'Authorization' => 'Bearer '.$this->getApiKey(),
         'Accept' => 'application/json',
@@ -105,6 +105,8 @@ class Client {
       'body' => $data,
       'on_stats' => [$this, 'recordStats']
     ]);
+
+    return new Response($guzzleResponse);
   }
 
   public function recordStats(TransferStats $stats) {
