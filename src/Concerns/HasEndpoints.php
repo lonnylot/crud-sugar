@@ -2,7 +2,6 @@
 
 namespace CrudSugar\Concerns;
 
-use CrudSugar\Contracts\EndpointContract;
 use ReflectionClass;
 use Exception;
 
@@ -12,8 +11,8 @@ trait HasEndpoints {
 
   public function registerEndpointClass(string $endpointClass) {
     $reflect = new ReflectionClass($endpointClass);
-    if (!in_array(EndpointContract::class, array_keys($reflect->getInterfaces()))) {
-      throw new Exception($endpointClass." must implement ".Endpoint::class);
+    if (!in_array(IsEndpoint::class, array_keys($reflect->getTraits()))) {
+      throw new Exception($endpointClass." must use ".IsEndpoint::class);
     }
 
     // Convert a class name 'DummyEndpoint' to 'dummyEndpoint'

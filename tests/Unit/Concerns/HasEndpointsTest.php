@@ -4,9 +4,9 @@ namespace Tests\Unit\Concerns;
 
 use Exception;
 use Tests\TestCase;
-use Tests\DummyEndpoint;
 
 use CrudSugar\Concerns\HasEndpoints;
+use CrudSugar\Concerns\IsEndpoint;
 
 class HasEndpointsTest extends TestCase {
   public function testUnsetEndpoint() {
@@ -34,7 +34,7 @@ class HasEndpointsTest extends TestCase {
   public function testRegisterEndpoint() {
     // Given
     $classWithTrait = $this->getObjectForTrait(HasEndpoints::class);
-    $endpointClass = DummyEndpoint::class;
+    $endpointClass = get_class($this->getObjectForTrait(IsEndpoint::class));
 
     // When
     $endpoint = $classWithTrait->registerEndpointClass($endpointClass);
@@ -43,23 +43,24 @@ class HasEndpointsTest extends TestCase {
     $this->assertTrue($endpoint instanceof $endpointClass);
   }
 
-  public function testUserRegisteredEndpoint() {
+  public function testUserRegisteredEndpointIsCallable() {
     // Given
     $classWithTrait = $this->getObjectForTrait(HasEndpoints::class);
-    $endpointClass = DummyEndpoint::class;
+    $endpointClass = get_class($this->getObjectForTrait(IsEndpoint::class));
+    $endpointName = lcfirst($endpointClass);
     $classWithTrait->registerEndpointClass($endpointClass);
 
     // When
-    $result = $classWithTrait->dummyEndpoint->all();
+    $result = $classWithTrait->$endpointName->setClient(uniqid());
 
     // Then
-    $this->assertTrue(is_array($result));
+    $this->assertNull($result);
   }
 
   public function testRegisterDuplicateEndpoint() {
     // Given
     $classWithTrait = $this->getObjectForTrait(HasEndpoints::class);
-    $endpointClass = DummyEndpoint::class;
+    $endpointClass = get_class($this->getObjectForTrait(IsEndpoint::class));
     $classWithTrait->registerEndpointClass($endpointClass);
     $this->expectException(Exception::class);
 
