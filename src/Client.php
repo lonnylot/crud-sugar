@@ -2,7 +2,7 @@
 
 namespace CrudSugar;
 
-use CrudSugar\Concerns\Endpoint;
+use CrudSugar\Contracts\EndpointContract;
 use Exception;
 use ReflectionClass;
 use GuzzleHttp\Client as GuzzleClient;
@@ -127,7 +127,7 @@ class Client {
     }
 
     if (!isset(self::$instances[$name])) {
-      self::$instances[$name] = new self($name);
+      self::$instances[$name] = new static($name);
     }
 
     return self::$instances[$name];
@@ -141,7 +141,7 @@ class Client {
 
   public function registerEndpointClass(string $endpointClass) {
     $reflect = new ReflectionClass($endpointClass);
-    if (!in_array(Endpoint::class, array_keys($reflect->getInterfaces()))) {
+    if (!in_array(EndpointContract::class, array_keys($reflect->getInterfaces()))) {
       throw new Exception($endpointClass." must implement ".Endpoint::class);
     }
 

@@ -2,15 +2,14 @@
 
 namespace Tests;
 
-use CrudSugar\Concerns\Endpoint;
-use CrudSugar\Client;
+use CrudSugar\Contracts\EndpointContract;
 
-class DummyEndpoint implements Endpoint {
+class DummyEndpoint implements EndpointContract {
   protected $baseEndpoint = '/dummy';
 
   private $client;
 
-  public function __construct(Client $client) {
+  public function __construct($client) {
     $this->client = $client;
   }
 
