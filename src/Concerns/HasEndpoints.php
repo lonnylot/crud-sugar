@@ -22,7 +22,8 @@ trait HasEndpoints {
       throw new Exception($reflect->getShortName()." has already been registered.");
     }
 
-    $this->endpoints[$endpointName] = new $endpointClass($this);
+    $this->endpoints[$endpointName] = new $endpointClass();
+    $this->endpoints[$endpointName]->setClient($this);
 
     return $this->endpoints[$endpointName];
   }
