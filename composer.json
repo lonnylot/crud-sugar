@@ -2,6 +2,8 @@
     "name": "lonnylot/crud-sugar",
     "description": "CRUD sugar for REST APIs",
     "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "guzzlehttp/guzzle": "^6.4"
     },
