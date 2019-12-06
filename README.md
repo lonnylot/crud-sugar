@@ -28,7 +28,7 @@ $client->setBaseUrl('https://api.telnyx.com/');
 $client->setApiKey('secret-key');
 ```
 
-*NOTE* See [Creating Instances](#creating-instances)
+> *NOTE* See [Creating Instances](#creating-instances)
 
 ### Registering your endpoints
 
@@ -36,8 +36,8 @@ $client->setApiKey('secret-key');
 $client->registerEndpointClass(NumberSearch::class);
 ```
 
-*NOTE* See [Endpoint Example Class](#example-class)
-All endpoints must implement `\CrudSugar\Concerns\Endpoints`
+> *NOTE* See [Endpoint Example Class](#endpoint)
+All endpoints must use `\CrudSugar\Concerns\IsEndpoint`
 
 ### Use your endpoint
 
@@ -45,29 +45,49 @@ All endpoints must implement `\CrudSugar\Concerns\Endpoints`
 $response = $client->numberSearch->all();
 ```
 
-## Example Endpoint
+## Working With Responses
 
-All endpoints must implement `CrudSugar\Concerns\Endpoints`.
+All requests return a [Response](src/Response.php) object.
+
+> *NOTE*: Response decorates the [GuzzleHTTP Response](http://docs.guzzlephp.org/en/stable/psr7.html#responses). All methods available on the GuzzleHTTP Response are also available through the returned Response object.
+
+### Response API
+
+#### isJson
+
+Returns `true` if the `Content-Type` header contains `\json` or `+json`
+
+#### isSuccessful
+
+Returns `true` if the status code is >= 200 < 300
+
+#### getContent
+
+If `isJson` then returns an associative array. Otherwise returns a string.
+
+## Advanced
+
+### Creating Instances
+
+You can create and instance by calling `\CrudSugar\Client::getInstance()`, but you can also create named instances by calling `\CrudSugar\Client::getInstance('telnyx')`. If you name your instance then you can get that same instance anywhere in your app.
+
+### Examples
+
+#### Endpoint
+
+All endpoints must use `\CrudSugar\Concerns\IsEndpoint`.
 
 ```php
-use CrudSugar\Concerns\Endpoints;
+use CrudSugar\Concerns\IsEndpoint;
 use CrudSugar\Client;
 
-class NumberSearch implements Endpoints {
-  private $client;
+class NumberSearch {
+  use IsEndpoint;
 
-  private $endpoint = '/origination/number_searches';
-
-  public function __construct(Client $client) {
-    $this->client = $client;
-  }
+  private $path = '/origination/number_searches';
 
   public function all($params) {
-    return $this->client->request('GET', $this->endpoint, $params);
+    return $this->client->request('GET', $this->path, $params);
   }
 }
 ```
-
-## Creating Instances
-
-You can create and instance by calling `\CrudSugar\Client::getInstance()`, but you can also create named instances by calling `\CrudSugar\Client::getInstance('telnyx')`. If you name your instance then you can get that same instance anywhere in your app.
