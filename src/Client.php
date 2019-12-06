@@ -9,7 +9,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 
 class Client {
 
@@ -111,10 +111,13 @@ class Client {
       ]);
 
       return new Response($guzzleResponse);
-    } catch (ClientException $e) {
-      print_r($e);
-      throw $e;
+    } catch (RequestException $e) {
+      return $this->generateResponseFromClientError($e);
     }
+  }
+
+  public function generateResponseFromClientError(ClientException $e) {
+    return new Response($e->getResponse());
   }
 
   public function bindPathParams($path, $data) {
