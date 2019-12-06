@@ -2,15 +2,19 @@
 
 namespace CrudSugar;
 
-use CrudSugar\Contracts\EndpointContract;
+use CrudSugar\Concerns\HasStaticInstances;
+use CrudSugar\Concerns\HasEndpoints;
 use Exception;
-use ReflectionClass;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
 
 class Client {
+
+  use HasStaticInstances;
+  use HasEndpoints;
+
   protected $baseUrl = 'https://api.clarityboard.com/v/';
 
   protected $key = null;
@@ -18,16 +22,6 @@ class Client {
   protected $handler = null;
 
   protected $requestStats = [];
-
-  protected static $instances = [];
-
-  protected $name = null;
-
-  protected $endpoints = [];
-
-  protected function __construct($name) {
-    $this->name = $name;
-  }
 
   public function setApiKey($key) {
     if (!is_string($key)) {
@@ -121,47 +115,9 @@ class Client {
     return end($this->requestStats);
   }
 
-  public static function getInstance($name = null) {
-    if (is_null($name)) {
-      $name = uniqid();
-    }
-
-    if (!isset(self::$instances[$name])) {
-      self::$instances[$name] = new static($name);
-    }
-
-    return self::$instances[$name];
-  }
-
   public function reset() {
     $this->requestStats = [];
     $this->handler = null;
     $this->endpoints = [];
-  }
-
-  public function registerEndpointClass(string $endpointClass) {
-    $reflect = new ReflectionClass($endpointClass);
-    if (!in_array(EndpointContract::class, array_keys($reflect->getInterfaces()))) {
-      throw new Exception($endpointClass." must implement ".Endpoint::class);
-    }
-
-    // Convert a class name 'DummyEndpoint' to 'dummyEndpoint'
-    $endpointName = lcfirst($reflect->getShortName());
-
-    if (isset($this->endpoints[$endpointName])) {
-      throw new Exception($reflect->getShortName()." has already been registered.");
-    }
-
-    $this->endpoints[$endpointName] = new $endpointClass($this);
-
-    return $this->endpoints[$endpointName];
-  }
-
-  public function __get($name) {
-    if (!isset($this->endpoints[$name])) {
-      throw new Exception("The '" . $name . "' endpoint was not found. Please register it with ".self::class."::registerEndpointClass()");
-    }
-
-    return $this->endpoints[$name];
   }
 }
