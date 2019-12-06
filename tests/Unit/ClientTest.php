@@ -89,7 +89,7 @@ class ClientTest extends TestCase {
 
     // Then
     $this->assertEquals($finalPath, $path);
-    $this->assertCount(0, $data);
+    $this->assertNull($data);
   }
 
   public function testPathParamsBindingReturnsUnboundData() {

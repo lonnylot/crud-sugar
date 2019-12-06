@@ -65,7 +65,7 @@ trait IsEndpoint {
 
   public function __call($name, $arguments) {
     if (in_array($name, $this->resources)) {
-      return $this->requestResource($name, count($arguments) ? $arguments[0] : []);
+      return $this->requestResource($name, count($arguments) ? $arguments[0] : null);
     }
 
     throw new Exception('The resource named "'.$name.'" is unavailable for this endpoint');

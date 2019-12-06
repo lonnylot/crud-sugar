@@ -9,6 +9,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
+use GuzzleHttp\Exception\ClientException;
 
 class Client {
 
@@ -96,26 +97,31 @@ class Client {
 
     $guzzleClient = new GuzzleClient($clientOptions);
 
-    $guzzleResponse = $guzzleClient->request($method, $uri, [
-      'headers' => [
-        'Authorization' => 'Bearer '.$this->getApiKey(),
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json',
-        'User-Agent' => 'crud-sugar-sdk/1.0'
-      ],
-      'timeout' => 10,
-      'body' => $data,
-      'on_stats' => [$this, 'recordStats']
-    ]);
+    try {
+      $guzzleResponse = $guzzleClient->request($method, $uri, [
+        'headers' => [
+          'Authorization' => 'Bearer '.$this->getApiKey(),
+          'Accept' => 'application/json',
+          'Content-Type' => 'application/json',
+          'User-Agent' => 'crud-sugar-sdk/1.0'
+        ],
+        'timeout' => 10,
+        'body' => $data,
+        'on_stats' => [$this, 'recordStats']
+      ]);
 
-    return new Response($guzzleResponse);
+      return new Response($guzzleResponse);
+    } catch (ClientException $e) {
+      print_r($e);
+      throw $e;
+    }
   }
 
   public function bindPathParams($path, $data) {
     $bindings = [];
     preg_match_all('/{[\\d\\w]*}/', $path, $bindings);
 
-    if (count($bindings[0]) === 0) {
+    if (count($bindings[0]) === 0 || !is_array($data)) {
       return [$path, $data];
     }
 
@@ -127,6 +133,10 @@ class Client {
 
         unset($data[$paramName]);
       }
+    }
+
+    if (count($data) === 0) {
+      $data = null;
     }
 
     return [$path, $data];
