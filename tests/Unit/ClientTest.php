@@ -63,4 +63,40 @@ class ClientTest extends TestCase {
     // Then
     $this->assertInstanceOf(Response::class, $response);
   }
+
+  public function testPathParamsBinding() {
+    // Given
+    $originalData = [
+      'id' => uniqid(),
+      'barId' => uniqid()
+    ];
+    $path = 'foo/{id}/bar/{barId}';
+    $finalPath = 'foo/'.$originalData['id'].'/bar/'.$originalData['barId'];
+
+    // When
+    [$path, $data] = $this->getClient()->bindPathParams($path, $originalData);
+
+    // Then
+    $this->assertEquals($finalPath, $path);
+    $this->assertCount(0, $data);
+  }
+
+  public function testPathParamsBindingReturnsUnboundData() {
+    // Given
+    $originalData = [
+      'id' => uniqid(),
+      'barId' => uniqid(),
+      'someOtherData' => uniqid()
+    ];
+    $path = 'foo/{id}/bar/{barId}';
+    $finalPath = 'foo/'.$originalData['id'].'/bar/'.$originalData['barId'];
+
+    // When
+    [$path, $data] = $this->getClient()->bindPathParams($path, $originalData);
+
+    // Then
+    $this->assertEquals($finalPath, $path);
+    $this->assertCount(1, $data);
+    $this->assertSame(['someOtherData' => $originalData['someOtherData']], $data);
+  }
 }

@@ -63,8 +63,10 @@ class Client {
     return $this->baseUrl;
   }
 
-  public function request($method, $endpoint, $data = null) {
-    $uri = new Uri($endpoint);
+  public function request($method, $path, $data = null) {
+    [$path, $data] = $this->bindPathParams($path, $data);
+
+    $uri = new Uri($path);
 
     switch ($method) {
       case 'GET':
@@ -107,6 +109,27 @@ class Client {
     ]);
 
     return new Response($guzzleResponse);
+  }
+
+  public function bindPathParams($path, $data) {
+    $bindings = [];
+    preg_match_all('/{[\\d\\w]*}/', $path, $bindings);
+
+    if (count($bindings[0]) === 0) {
+      return [$path, $data];
+    }
+
+    foreach($bindings[0] as $binding) {
+      $paramName = str_replace('{', '', str_replace('}', '', $binding));
+
+      if (isset($data[$paramName])) {
+        $path = str_replace($binding, $data[$paramName], $path);
+
+        unset($data[$paramName]);
+      }
+    }
+
+    return [$path, $data];
   }
 
   public function recordStats(TransferStats $stats) {
