@@ -79,7 +79,6 @@ All endpoints must use `\CrudSugar\Concerns\IsEndpoint`.
 
 ```php
 use CrudSugar\Concerns\IsEndpoint;
-use CrudSugar\Client;
 
 class NumberSearch {
   use IsEndpoint;
