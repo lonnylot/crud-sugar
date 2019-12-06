@@ -29,6 +29,14 @@ trait IsEndpoint {
     'delete' => 'DELETE'
   ];
 
+  public function boot() {
+    if (is_null($this->client)) {
+      throw new Exception('You must call "'.self::class.'::setClient()" before calling "'.self::class.'::boot()"');
+    }
+    
+    $this->buildResourcePaths();
+  }
+
   public function setClient($client) {
     $this->client = $client;
   }

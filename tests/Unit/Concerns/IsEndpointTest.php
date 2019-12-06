@@ -63,4 +63,15 @@ class IsEndpointsTest extends TestCase {
 
     // Then
   }
+
+  public function testBootRequiresClient() {
+    // Given
+    $this->expectException(Exception::class);
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+
+    // When
+    $classWithTrait->boot();
+
+    // Then
+  }
 }
