@@ -15,7 +15,7 @@ class Client {
   use HasStaticInstances;
   use HasEndpoints;
 
-  protected $baseUrl = 'https://api.clarityboard.com/v/';
+  protected $baseUrl = '';
 
   protected $key = null;
 
@@ -138,11 +138,5 @@ class Client {
 
   public function getLatestRequestStats() {
     return end($this->requestStats);
-  }
-
-  public function reset() {
-    $this->requestStats = [];
-    $this->handler = null;
-    $this->endpoints = [];
   }
 }

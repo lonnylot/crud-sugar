@@ -42,4 +42,18 @@ class HasStaticInstancesTest extends TestCase {
     // Then
     $this->assertSame($name, $instance->getName());
   }
+
+  public function testResetClearsAttributes() {
+    // Given
+    $originalName = $this->getClient()->getName();
+    $this->getClient()->setBaseUrl(uniqid());
+
+    // When
+    $this->getClient()->reset();
+    $nameAfterReset = $this->getClient()->getName();
+
+    // Then
+    $this->assertSame($originalName, $nameAfterReset);
+    $this->assertEmpty($this->getClient()->getBaseUrl());
+  }
 }

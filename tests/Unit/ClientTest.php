@@ -42,6 +42,16 @@ class ClientTest extends TestCase {
     $this->assertEquals($this->getClient()->getApiKey(), $key);
   }
 
+  public function testGetUnsetKey() {
+    // Given
+    $this->expectException(Exception::class);
+
+    // When
+    $this->getClient()->getApiKey();
+
+    // Then
+  }
+
   public function testGetSetBaseUrl() {
     // Given
     $baseUrl = 'https://fakeurl/';
@@ -56,6 +66,7 @@ class ClientTest extends TestCase {
   public function testRequestReturnsResponse() {
     // Given
     $endpoint = uniqid();
+    $this->getClient()->setApiKey(uniqid());
 
     // When
     $response = $this->getClient()->request('GET', $endpoint);

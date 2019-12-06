@@ -28,4 +28,10 @@ trait HasStaticInstances {
   public function getName() {
     return $this->name;
   }
+
+  public function reset() {
+    $name = $this->name;
+    unset(self::$instances[$name]);
+    return self::getInstance($name);
+  }
 }

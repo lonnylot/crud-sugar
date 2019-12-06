@@ -24,6 +24,7 @@ trait HasEndpoints {
 
     $this->endpoints[$endpointName] = new $endpointClass();
     $this->endpoints[$endpointName]->setClient($this);
+    $this->endpoints[$endpointName]->buildResourcePaths();
 
     return $this->endpoints[$endpointName];
   }

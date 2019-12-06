@@ -42,7 +42,7 @@ All endpoints must use `\CrudSugar\Concerns\IsEndpoint`
 ### Use your endpoint
 
 ```php
-$response = $client->numberSearch->all();
+$response = $client->numberSearch->index();
 ```
 
 ## Working With Responses
@@ -65,17 +65,42 @@ Returns `true` if the status code is >= 200 < 300
 
 If `isJson` then returns an associative array. Otherwise returns a string.
 
+### IsEndpoint API
+
+#### $path
+
+Required. The base path to your endpoint. Should not begin or end in a `/`. Should not include any resource specific IDs.
+
+#### $resources
+
+The list of resources this endpoint has. Defaults to `index`, `show`, `store`, `update`, `delete`.
+
+#### $resourceKey
+
+The key used to identify a specific resource. Defaults to `id`.
+
+#### $resourcePaths
+
+A list of resource specific paths. Auto-generates for each `$resource` by appending the `$resourceKey` to the end.
+
+
+#### $resourceMethods
+
+A mapping from each resource to the HTTP method.
+
 ## Advanced
 
 ### Creating Instances
 
 You can create and instance by calling `\CrudSugar\Client::getInstance()`, but you can also create named instances by calling `\CrudSugar\Client::getInstance('telnyx')`. If you name your instance then you can get that same instance anywhere in your app.
 
-### Examples
-
-#### Endpoint
+### Endpoints
 
 All endpoints must use `\CrudSugar\Concerns\IsEndpoint`.
+
+#### Class Variables
+
+#####
 
 ```php
 use CrudSugar\Concerns\IsEndpoint;
@@ -85,8 +110,6 @@ class NumberSearch {
 
   private $path = '/origination/number_searches';
 
-  public function all($params) {
-    return $this->client->request('GET', $this->path, $params);
-  }
+  private $resources = ['index'];
 }
 ```
