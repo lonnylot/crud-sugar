@@ -112,11 +112,11 @@ class Client {
 
       return new Response($guzzleResponse);
     } catch (RequestException $e) {
-      return $this->generateResponseFromClientError($e);
+      return $this->generateResponseFromRequestException($e);
     }
   }
 
-  public function generateResponseFromClientError(ClientException $e) {
+  public function generateResponseFromRequestException(RequestException $e) {
     return new Response($e->getResponse());
   }
 
