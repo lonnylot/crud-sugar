@@ -25,7 +25,7 @@ trait HasEndpoints {
     $instance = new $endpointClass();
     $instance->setClient($this);
     if (method_exists($instance, 'boot')) {
-      $this->endpoints[$endpointName]->boot();
+      $instance->boot();
     }
     $instance->buildResourcePaths();
 

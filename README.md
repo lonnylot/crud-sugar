@@ -108,8 +108,9 @@ use CrudSugar\Concerns\IsEndpoint;
 class NumberSearch {
   use IsEndpoint;
 
-  private $path = '/origination/number_searches';
-
-  private $resources = ['index'];
+  public function boot() {
+    $this->path = '/origination/number_searches';
+    $this->resources = ['index'];
+  }
 }
 ```
