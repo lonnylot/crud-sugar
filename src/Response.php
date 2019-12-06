@@ -38,7 +38,7 @@ class Response {
     }
 
     if ($this->isJson()) {
-      $this->content = json_decode($this->original);
+      $this->content = json_decode($this->original, true);
     } else {
       $this->content = $this->original;
     }
