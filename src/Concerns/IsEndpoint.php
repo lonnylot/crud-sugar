@@ -55,12 +55,46 @@ trait IsEndpoint {
     }
   }
 
-  public function needsResourcePath($resource) {
+  public function needsResourcePath($resource): bool {
     return in_array($resource, $this->resources) && !isset($this->resourcePaths[$resource]);
   }
 
   public function requestResource($resource, $params) {
-    return $this->client->request($this->resourceMethods[$resource], $this->resourcePaths[$resource], $params);
+    return $this->client->request($this->getResourceMethod($resource), $this->getResourcePath($resource), $params);
+  }
+
+  public function setPath(string $path) {
+    $this->path = $path;
+    $this->resourcePaths = [];
+    $this->buildResourcePaths();
+  }
+
+  public function getPath(): string {
+    return $this->path;
+  }
+
+  public function setResources(array $resources) {
+    $this->resources = $resources;
+  }
+
+  public function getResources(): array {
+    return $this->resources;
+  }
+
+  public function setResourcePath(string $resource, string $path) {
+    $this->resourcePaths[$resource] = $path;
+  }
+
+  public function getResourcePath(string $resource) {
+    return $this->resourcePaths[$resource] ?? null;
+  }
+
+  public function setResourceMethod(string $resource, string $method) {
+    $this->resourceMethods[$resource] = $method;
+  }
+
+  public function getResourceMethod(string $resource) {
+    return $this->resourceMethods[$resource] ?? null;
   }
 
   public function __call($name, $arguments) {

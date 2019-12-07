@@ -63,4 +63,96 @@ class IsEndpointsTest extends TestCase {
 
     // Then
   }
+
+  public function testCanSetPath() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $path = uniqid();
+
+    // When
+    $classWithTrait->setPath($path);
+
+    // Then
+    $this->assertSame($path, $classWithTrait->getPath());
+  }
+
+  public function testCanSetResourcePath() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $resource = uniqid();
+    $path = uniqid();
+
+    // When
+    $classWithTrait->setResourcePath($resource, $path);
+
+    // Then
+    $this->assertSame($path, $classWithTrait->getResourcePath($resource));
+  }
+
+  public function testUndefinedResourcePathIsNull() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $resource = uniqid();
+
+    // When
+    $resourcePath = $classWithTrait->getResourcePath($resource);
+
+    // Then
+    $this->assertNull($resourcePath);
+  }
+
+  public function testCanSetResourceMethod() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $resource = uniqid();
+    $method = uniqid();
+
+    // When
+    $classWithTrait->setResourceMethod($resource, $method);
+
+    // Then
+    $this->assertSame($method, $classWithTrait->getResourceMethod($resource));
+  }
+
+  public function testUndefinedResourceMethodIsNull() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $resource = uniqid();
+
+    // When
+    $resourceMethod = $classWithTrait->getResourceMethod($resource);
+
+    // Then
+    $this->assertNull($resourceMethod);
+  }
+
+  public function testCanSetResources() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $resources = [uniqid(), uniqid(), uniqid()];
+
+    // When
+    $classWithTrait->setResources($resources);
+
+    // Then
+    $this->assertSame($resources, $classWithTrait->getResources());
+  }
+
+  public function testDefaultResources() {
+    // Given
+    $classWithTrait = $this->getObjectForTrait(IsEndpoint::class);
+    $defaultResources = [
+      'index',
+      'store',
+      'show',
+      'update',
+      'delete',
+    ];
+
+    // When
+    $endpointResources = $classWithTrait->getResources();
+
+    // Then
+    $this->assertSame($defaultResources, $endpointResources);
+  }
 }
