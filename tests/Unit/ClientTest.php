@@ -163,4 +163,14 @@ class ClientTest extends TestCase {
     // Then
     $this->assertTrue($validator->passes());
   }
+
+  public function testUserAgent() {
+    // Given
+    $userAgent = $this->getClient()->getUserAgent();
+
+    // When
+
+    // Then
+    $this->assertIsString($userAgent);
+  }
 }

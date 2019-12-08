@@ -125,7 +125,7 @@ class Client {
           'Authorization' => 'Bearer '.$this->getApiKey(),
           'Accept' => 'application/json',
           'Content-Type' => 'application/json',
-          'User-Agent' => 'crud-sugar-sdk/1.0'
+          'User-Agent' => $this->getUserAgent(),
         ],
         'timeout' => 10,
         'body' => $data,
@@ -136,6 +136,10 @@ class Client {
     } catch (RequestException $e) {
       return $this->generateResponseFromRequestException($e);
     }
+  }
+
+  public function getUserAgent(): string {
+    return 'crud-sugar-sdk/1.0.0';
   }
 
   public function generateResponseFromRequestException(RequestException $e) {
