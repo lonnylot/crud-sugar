@@ -2,11 +2,12 @@
 
 namespace Tests\Unit\Concerns;
 
-use Exception;
 use Tests\TestCase;
-
+use Tests\Concrete\Endpoint;
 use CrudSugar\Concerns\IsEndpoint;
 use CrudSugar\Response;
+use Exception;
+use Illuminate\Validation\ValidationException;
 
 class IsEndpointsTest extends TestCase {
   public function testNeedsAllResourcePaths() {
@@ -154,5 +155,38 @@ class IsEndpointsTest extends TestCase {
 
     // Then
     $this->assertSame($defaultResources, $endpointResources);
+  }
+
+  public function testValidateResourceWithNoResourceMethod() {
+    // Given
+    $this->expectException(Exception::class);
+
+    // When
+    $this->getClient()->registerEndpointClass(Endpoint::class);
+
+    // Then
+    $this->getClient()->endpoint->nomethod();
+  }
+
+  public function testValidateResourceWithNoResourcePath() {
+    // Given
+    $this->expectException(Exception::class);
+
+    // When
+    $this->getClient()->registerEndpointClass(Endpoint::class);
+
+    // Then
+    $this->getClient()->endpoint->nopath();
+  }
+
+  public function testValidateResourceWithValidationRulesFails() {
+    // Given
+    $this->expectException(ValidationException::class);
+
+    // When
+    $this->getClient()->registerEndpointClass(Endpoint::class);
+
+    // Then
+    $this->getClient()->endpoint->invalid();
   }
 }

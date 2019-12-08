@@ -60,7 +60,25 @@ trait IsEndpoint {
   }
 
   public function requestResource($resource, $params) {
+    $this->validateResource($resource, $params);
+
     return $this->client->request($this->getResourceMethod($resource), $this->getResourcePath($resource), $params);
+  }
+
+  public function validateResource($resource, $params) {
+    if (is_null($this->getResourceMethod($resource))) {
+      throw new Exception('No method registered for "'.$resource.'".');
+    }
+
+    if (is_null($this->getResourcePath($resource))) {
+      throw new Exception('No path registered for "'.$resource.'".');
+    }
+
+    $validateRulesMethodName = 'validate'.ucfirst(strtolower($resource)).'Rules';
+    if (method_exists($this, $validateRulesMethodName)) {
+      $validateRules = $this->$validateRulesMethodName();
+      $this->client->getValidatorFactory()->validate($params ?? [], $validateRules);
+    }
   }
 
   public function setPath(string $path) {

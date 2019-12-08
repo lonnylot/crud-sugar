@@ -3,7 +3,8 @@
     "description": "CRUD sugar for REST APIs",
     "type": "library",
     "require": {
-        "guzzlehttp/guzzle": "^6.4"
+        "guzzlehttp/guzzle": "^6.4",
+        "illuminate/validation": "^6.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4"

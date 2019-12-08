@@ -2,11 +2,15 @@
 
 namespace Tests\Unit;
 
-use Exception;
-use Tests\TestCase;
 
+use Tests\TestCase;
 use CrudSugar\Client;
 use CrudSugar\Response;
+use Exception;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Translation\FileLoader;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\Factory;
 
 class ClientTest extends TestCase {
   public function testSetApiRequiresString() {
@@ -109,5 +113,54 @@ class ClientTest extends TestCase {
     $this->assertEquals($finalPath, $path);
     $this->assertCount(1, $data);
     $this->assertSame(['someOtherData' => $originalData['someOtherData']], $data);
+  }
+
+  public function testCanGenerateWorkableValidator() {
+    // Given
+    $validatorFactory = $this->getClient()->getValidatorFactory();
+    $data = [
+      'one' => uniqid(),
+      'two' => [
+        uniqid(),
+        uniqid()
+      ]
+    ];
+    $rules = [
+      'one' => [
+        'required', 'string'
+      ],
+      'two.*' => [
+        'string'
+      ]
+    ];
+
+    // When
+    $validator = $validatorFactory->make($data, $rules);
+
+    // Then
+    $this->assertTrue($validator->passes());
+  }
+
+  public function testCanSetValidatorFactory() {
+    // Given
+    $translator = new Translator(new FileLoader(new Filesystem, ''), 'en');
+    $validatorFactory = new Factory($translator);
+    $validatorFactory->extend('isFive', function($attribute, $value) {
+      return $value === 5;
+    });
+    $data = [
+      'testField' => 5
+    ];
+    $rules = [
+      'testField' => ['isFive']
+    ];
+    $this->getClient()->setValidatorFactory($validatorFactory);
+
+    // When
+    $validator = $this->getClient()->getValidatorFactory()
+      ->make($data, $rules);
+
+    // Then
+    $this->assertTrue($validator->passes());
   }
 }

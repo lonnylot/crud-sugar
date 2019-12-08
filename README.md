@@ -91,21 +91,34 @@ You can create and instance by calling `\CrudSugar\Client::getInstance()`, but y
 
 ### Endpoints
 
-All endpoints must use `\CrudSugar\Concerns\IsEndpoint`.
+All endpoints must use the `\CrudSugar\Concerns\IsEndpoint` trait.
 
-#### Class Variables
+#### Resource Validation
 
-#####
+This package uses the [Laravel Validator](https://laravel.com/docs/6.x/validation).
+
+> *NOTE* The rules requiring a database (Exists, Unique, etc.) are **not** implemented.
+
+To validate a resource you can make a validation function that returns the [rules](https://laravel.com/docs/6.x/validation#available-validation-rules).
+
+##### Endpoint Example
 
 ```php
 use CrudSugar\Concerns\IsEndpoint;
 
-class NumberSearch {
+class NumberOrder {
   use IsEndpoint;
 
   public function boot() {
-    $this->setResources(['index']);
-    $this->setPath('origination/number_searches');
+    $this->setResources(['store']);
+    $this->setPath('number_orders');
+  }
+
+  public function validateIndexRules() {
+    return [
+      "phone_numbers" => ['required', 'array'],
+      "phone_numbers.*.phone_number" => ['required', 'string']
+    ];
   }
 }
 ```

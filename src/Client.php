@@ -10,6 +10,10 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Translation\FileLoader;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\Factory;
 
 class Client {
 
@@ -23,6 +27,24 @@ class Client {
   protected $handler = null;
 
   protected $requestStats = [];
+
+  protected $validator = null;
+
+  public function setValidatorFactory(Factory $validator) {
+    $this->validator = $validator;
+  }
+
+  public function getValidatorFactory() {
+    if (!is_null($this->validator)) {
+      return $this->validator;
+    }
+
+    // TODO: In the future we can set this up to actually handle translations
+    $translator = new Translator(new FileLoader(new Filesystem, ''), 'en');
+    $this->validator = new Factory($translator);
+
+    return $this->validator;
+  }
 
   public function setApiKey($key) {
     if (!is_string($key)) {
