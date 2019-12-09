@@ -30,6 +30,8 @@ class Client {
 
   protected $validator = null;
 
+  protected $authHeaders = null;
+
   public function setValidatorFactory(Factory $validator) {
     $this->validator = $validator;
   }
@@ -117,16 +119,17 @@ class Client {
       $clientOptions['handler'] = $this->handler;
     }
 
+    $headers = array_merge([
+      'Accept' => 'application/json',
+      'Content-Type' => 'application/json',
+      'User-Agent' => $this->getUserAgent(),
+    ], $this->getAuthHeaders());
+
     $guzzleClient = new GuzzleClient($clientOptions);
 
     try {
       $guzzleResponse = $guzzleClient->request($method, $uri, [
-        'headers' => [
-          'Authorization' => 'Bearer '.$this->getApiKey(),
-          'Accept' => 'application/json',
-          'Content-Type' => 'application/json',
-          'User-Agent' => $this->getUserAgent(),
-        ],
+        'headers' => $headers,
         'timeout' => 10,
         'body' => $data,
         'on_stats' => [$this, 'recordStats']
@@ -136,6 +139,18 @@ class Client {
     } catch (RequestException $e) {
       return $this->generateResponseFromRequestException($e);
     }
+  }
+
+  public function getAuthHeaders() {
+    if (is_array($this->authHeaders)) {
+      return $this->authHeaders;
+    }
+
+    return ['Authorization' => 'Bearer '.$this->getApiKey()];
+  }
+
+  public function setAuthHeaders(array $headers) {
+    $this->authHeaders = $headers;
   }
 
   public function getUserAgent(): string {

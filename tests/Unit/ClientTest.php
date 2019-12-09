@@ -173,4 +173,30 @@ class ClientTest extends TestCase {
     // Then
     $this->assertIsString($userAgent);
   }
+
+  public function testGetDefaultAuthHeaders() {
+    // Given
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+
+    // When
+    $authHeaders = $this->getClient()->getAuthHeaders();
+
+    // Then
+    $this->assertEquals(['Authorization' => 'Bearer '.$apiKey], $authHeaders);
+  }
+
+  public function testSetAuthHeaders() {
+    // Given
+    $authHeaderKey = uniqid();
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+    $this->getClient()->setAuthHeaders([$authHeaderKey => $apiKey]);
+
+    // When
+    $authHeaders = $this->getClient()->getAuthHeaders();
+
+    // Then
+    $this->assertEquals([$authHeaderKey => $apiKey], $authHeaders);
+  }
 }
