@@ -4,7 +4,8 @@
     "type": "library",
     "require": {
         "guzzlehttp/guzzle": "^6.4",
-        "illuminate/validation": "^6.6"
+        "illuminate/validation": "^6.6",
+        "quazardous/php-bump-version": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4"

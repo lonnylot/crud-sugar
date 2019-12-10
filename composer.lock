@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6951f3de93be8f1237881803d1e3ed27",
+    "content-hash": "bb3196a318266ced7fe94d927f1e4e12",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -898,6 +898,51 @@
             "time": "2017-10-23T01:57:42+00:00"
         },
         {
+            "name": "quazardous/php-bump-version",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/quazardous/php-bump-version.git",
+                "reference": "58b4916cca361a578f56e633427894bf4d5a9e93"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/quazardous/php-bump-version/zipball/58b4916cca361a578f56e633427894bf4d5a9e93",
+                "reference": "58b4916cca361a578f56e633427894bf4d5a9e93",
+                "shasum": ""
+            },
+            "require": {
+                "vanilla/garden-cli": "^1.0"
+            },
+            "bin": [
+                "bin/bump_version"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Quazardous\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Quazardous",
+                    "email": "berliozdavid@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Bump version and other GIT helpers",
+            "time": "2016-10-14T19:43:15+00:00"
+        },
+        {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "source": {
@@ -1412,6 +1457,42 @@
                 "standards"
             ],
             "time": "2019-11-18T17:27:11+00:00"
+        },
+        {
+            "name": "vanilla/garden-cli",
+            "version": "v1.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vanilla/garden-cli.git",
+                "reference": "8d150135624e207750cf45be107c3b4ef820faf4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vanilla/garden-cli/zipball/8d150135624e207750cf45be107c3b4ef820faf4",
+                "reference": "8d150135624e207750cf45be107c3b4ef820faf4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Garden\\Cli\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Todd Burry",
+                    "email": "todd@vanillaforums.com"
+                }
+            ],
+            "description": "A full-featured, yet ridiculously simple commandline parser for your next php cli script. Stop fighting with getopt().",
+            "time": "2017-11-30T16:08:28+00:00"
         }
     ],
     "packages-dev": [
