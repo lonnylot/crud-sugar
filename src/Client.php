@@ -15,6 +15,8 @@ use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Factory;
 
+require_once('version.php');
+
 class Client {
 
   use HasStaticInstances;
@@ -154,7 +156,7 @@ class Client {
   }
 
   public function getUserAgent(): string {
-    return 'crud-sugar-sdk/1.0.0';
+    return 'crud-sugar-sdk/'.CRUD_SUGAR_VERSION;
   }
 
   public function generateResponseFromRequestException(RequestException $e) {
