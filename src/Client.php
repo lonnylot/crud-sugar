@@ -34,6 +34,8 @@ class Client {
 
   protected $authHeaders = null;
 
+  protected $contentType = 'application/json';
+
   public function setValidatorFactory(Factory $validator) {
     $this->validator = $validator;
   }
@@ -106,8 +108,26 @@ class Client {
         }
         break;
       }
-      default: {
+      case 'POST': {
         if (is_array($data)) {
+          switch($this->getContentTypeRequestValue()) {
+            case 'application/x-www-form-urlencoded': {
+              $data = [
+                'form_params' => $data
+              ];
+              break;
+            }
+            case 'application/json': {
+              $data = json_encode($data);
+              break;
+            }
+          }
+        }
+
+        break;
+      }
+      default: {
+        if (is_array($data) && $this->getContentTypeRequestValue() === 'application/json') {
           $data = json_encode($data);
         }
       }
@@ -123,7 +143,7 @@ class Client {
 
     $headers = array_merge([
       'Accept' => 'application/json',
-      'Content-Type' => 'application/json',
+      'Content-Type' => $this->getContentTypeRequestValue(),
       'User-Agent' => $this->getUserAgent(),
     ], $this->getAuthHeaders());
 
@@ -153,6 +173,14 @@ class Client {
 
   public function setAuthHeaders(array $headers) {
     $this->authHeaders = $headers;
+  }
+
+  public function getContentTypeRequestValue() {
+    return $this->contentType;
+  }
+
+  public function setContentTypeRequestValue($contentType) {
+    $this->contentType = $contentType;
   }
 
   public function getUserAgent(): string {

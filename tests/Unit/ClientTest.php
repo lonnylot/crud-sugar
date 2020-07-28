@@ -199,4 +199,30 @@ class ClientTest extends TestCase {
     // Then
     $this->assertEquals([$authHeaderKey => $apiKey], $authHeaders);
   }
+
+  public function testGetContentTypeRequestValue() {
+    // Given
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+
+    // When
+    $contentType = $this->getClient()->getContentTypeRequestValue();
+
+    // Then
+    $this->assertEquals('application/json', $contentType);
+  }
+
+  public function testSetContentTypeRequestValue() {
+    // Given
+    $data = uniqid();
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+    $this->getClient()->setContentTypeRequestValue($data);
+
+    // When
+    $contentType = $this->getClient()->getContentTypeRequestValue();
+
+    // Then
+    $this->assertEquals($data, $contentType);
+  }
 }
