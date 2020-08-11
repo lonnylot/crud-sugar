@@ -13,13 +13,20 @@ class Response {
 
   private $content = null;
 
-  public function __construct(GuzzleResponse $guzzleResponse) {
+  public function __construct(GuzzleResponse $guzzleResponse = null, Exception $exception = null) {
     $this->guzzleResponse = $guzzleResponse;
+    $this->exception = $exception;
 
-    $this->original = $this->guzzleResponse->getBody()->getContents();
+    if (!is_null($this->guzzleResponse)) {
+      $this->original = $this->guzzleResponse->getBody()->getContents();
+    }
   }
 
   public function isJson() {
+    if (is_null($this->guzzleResponse)) {
+      return false;
+    }
+
     $contentTypes = $this->guzzleResponse->getHeader('content-type');
     foreach($contentTypes as $contentType) {
       foreach(['/json', '+json'] as $jsonType) {
@@ -33,6 +40,10 @@ class Response {
   }
 
   public function getContent() {
+    if (is_null($this->guzzleResponse) && !is_null($this->exception)) {
+      return $this->exception->getMessage();
+    }
+
     if (!is_null($this->content)) {
       return $this->content;
     }
@@ -47,6 +58,10 @@ class Response {
   }
 
   public function isSuccessful() {
+    if (is_null($this->guzzleResponse) && !is_null($this->exception)) {
+      return false;
+    }
+
     return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
   }
 
