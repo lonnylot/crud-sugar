@@ -108,24 +108,6 @@ class Client {
         }
         break;
       }
-      case 'POST': {
-        if (is_array($data)) {
-          switch($this->getContentTypeRequestValue()) {
-            case 'application/x-www-form-urlencoded': {
-              $data = [
-                'form_params' => $data
-              ];
-              break;
-            }
-            case 'application/json': {
-              $data = json_encode($data);
-              break;
-            }
-          }
-        }
-
-        break;
-      }
       default: {
         if (is_array($data) && $this->getContentTypeRequestValue() === 'application/json') {
           $data = json_encode($data);
@@ -150,12 +132,20 @@ class Client {
     $guzzleClient = new GuzzleClient($clientOptions);
 
     try {
-      $guzzleResponse = $guzzleClient->request($method, $uri, [
+      $requestData = [
         'headers' => $headers,
         'timeout' => 10,
-        'body' => $data,
-        'on_stats' => [$this, 'recordStats']
-      ]);
+        'on_stats' => [$this, 'recordStats'],
+      ];
+
+      if ($this->getContentTypeRequestValue() === 'application/x-www-form-urlencoded') {
+        $requestData['form_params'] = $data;
+      } elseif ($this->getContentTypeRequestValue() === 'multipart/form-data') {
+        $requestData['multipart'] = $data;
+      } else {
+        $requestData['body'] = $data;
+      }
+      $guzzleResponse = $guzzleClient->request($method, $uri, $requestData);
 
       return new Response($guzzleResponse);
     } catch (RequestException $e) {
@@ -188,7 +178,7 @@ class Client {
   }
 
   public function generateResponseFromRequestException(RequestException $e) {
-    return new Response($e->getResponse());
+    return new Response($e->getResponse(), $e->getPrevious());
   }
 
   public function bindPathParams($path, $data) {
