@@ -1,3 +1,4 @@
+1.2.4: 
 1.2.3: Send the current exception, not the previous exception in the error response
 1.2.2: Handle ConnectionException
 1.2.1: Appropriately set the request input
