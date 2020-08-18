@@ -178,7 +178,7 @@ class Client {
   }
 
   public function generateResponseFromRequestException(RequestException $e) {
-    return new Response($e->getResponse(), $e->getPrevious());
+    return new Response($e->getResponse(), $e);
   }
 
   public function bindPathParams($path, $data) {
