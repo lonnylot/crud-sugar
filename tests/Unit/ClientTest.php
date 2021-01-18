@@ -225,4 +225,19 @@ class ClientTest extends TestCase {
     // Then
     $this->assertEquals($data, $contentType);
   }
+
+  public function testVerifySsl() {
+    // Given
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+
+    // When
+    $r1 = $this->getClient()->getVerifySsl();
+    $this->getClient()->setVerifySsl(false);
+    $r2 = $this->getClient()->getVerifySsl();
+
+    // Then
+    $this->assertTrue($r1);
+    $this->assertFalse($r2);
+  }
 }
