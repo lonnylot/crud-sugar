@@ -36,6 +36,8 @@ class Client {
 
   protected $contentType = 'application/json';
 
+  protected $verifySsl = true;
+
   public function setValidatorFactory(Factory $validator) {
     $this->validator = $validator;
   }
@@ -117,6 +119,7 @@ class Client {
 
     $clientOptions = [
       'base_uri' => $this->getBaseUrl(),
+      'verify' => $this->getVerifySsl(),
     ];
 
     if (!is_null($this->handler)) {
@@ -171,6 +174,14 @@ class Client {
 
   public function setContentTypeRequestValue($contentType) {
     $this->contentType = $contentType;
+  }
+
+  public function getVerifySsl() {
+    return $this->verifySsl;
+  }
+
+  public function setVerifySsl(bool $verifySsl) {
+    $this->verifySsl = $verifySsl;
   }
 
   public function getUserAgent(): string {
