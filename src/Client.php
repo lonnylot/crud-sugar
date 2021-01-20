@@ -38,6 +38,8 @@ class Client {
 
   protected $verifySsl = true;
 
+  protected $timeout = 10;
+
   public function setValidatorFactory(Factory $validator) {
     $this->validator = $validator;
   }
@@ -137,7 +139,7 @@ class Client {
     try {
       $requestData = [
         'headers' => $headers,
-        'timeout' => 10,
+        'timeout' => $this->getTimeout(),
         'on_stats' => [$this, 'recordStats'],
       ];
 
@@ -182,6 +184,14 @@ class Client {
 
   public function setVerifySsl(bool $verifySsl) {
     $this->verifySsl = $verifySsl;
+  }
+
+  public function getTimeout() {
+    return $this->timeout;
+  }
+
+  public function setTimeout(int $timeout) {
+    $this->timeout = $timeout;
   }
 
   public function getUserAgent(): string {
