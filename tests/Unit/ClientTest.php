@@ -240,4 +240,30 @@ class ClientTest extends TestCase {
     $this->assertTrue($r1);
     $this->assertFalse($r2);
   }
+
+  public function testGetTimeoutValue() {
+    // Given
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+
+    // When
+    $response = $this->getClient()->getTimeout();
+
+    // Then
+    $this->assertEquals(10, $response);
+  }
+
+  public function testSetTimeoutValue() {
+    // Given
+    $data = rand();
+    $apiKey = uniqid();
+    $this->getClient()->setApiKey($apiKey);
+    $this->getClient()->setTimeout($data);
+
+    // When
+    $response = $this->getClient()->getTimeout();
+
+    // Then
+    $this->assertEquals($data, $response);
+  }
 }
