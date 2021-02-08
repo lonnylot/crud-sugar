@@ -7,6 +7,7 @@ use Tests\TestCase;
 use CrudSugar\Client;
 use CrudSugar\Response;
 use Exception;
+use GuzzleHttp\Psr7\Uri;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
@@ -265,5 +266,94 @@ class ClientTest extends TestCase {
 
     // Then
     $this->assertEquals($data, $response);
+  }
+
+  public function testResolveUriAndDataParamsReturnsDefaultResolutionForMethodGet()
+  {
+    // Given
+    $path = uniqid();
+    $data = [
+      uniqid() => uniqid(),
+    ];
+
+    // When
+    [$uri, $responseData] = $this->getClient()->resolveUriAndDataParams('GET', $path, $data);
+
+    // Then
+    $this->assertEquals((new Uri($path))->withQuery(http_build_query($data)), $uri);
+    $this->assertEmpty($responseData);
+  }
+
+  public function testResolveUriAndDataParamsReturnsDefaultResolutionForMethodHead()
+  {
+    // Given
+    $path = uniqid();
+    $data = [
+      uniqid() => uniqid(),
+    ];
+
+    // When
+    [$uri, $responseData] = $this->getClient()->resolveUriAndDataParams('HEAD', $path, $data);
+
+    // Then
+    $this->assertEquals((new Uri($path))->withQuery(http_build_query($data)), $uri);
+    $this->assertEmpty($responseData);
+  }
+
+  public function testResolveUriAndDataParamsReturnsDefaultResolutionForMethodPost()
+  {
+    // Given
+    $path = uniqid();
+    $data = [
+      uniqid() => uniqid(),
+    ];
+
+    // When
+    [$uri, $responseData] = $this->getClient()->resolveUriAndDataParams('POST', $path, $data);
+
+    // Then
+    $this->assertEquals(new Uri($path), $uri);
+    $this->assertEquals(json_encode($data), $responseData);
+  }
+
+  public function testResolveUriAndDataParamsReturnsDefaultResolutionForMethodPostUpload()
+  {
+    // Given
+    $path = uniqid();
+    $data = [
+      uniqid() => uniqid(),
+    ];
+    $this->getClient()->setContentTypeRequestValue('multipart/form-data');
+
+    // When
+    [$uri, $responseData] = $this->getClient()->resolveUriAndDataParams('POST', $path, $data);
+
+    // Then
+    $this->assertEquals(new Uri($path), $uri);
+    $this->assertEquals($data, $responseData);
+  }
+
+  public function testResolveUriAndDataParamsReturnsCustomResolution()
+  {
+    // Given
+    $path = uniqid();
+    $data = [
+      uniqid() => uniqid(),
+    ];
+    $resolveUri = uniqid();
+    $resolveData = [
+      uniqid() => uniqid(),
+    ];
+    $callable = function($method, $path, $data) use ($resolveUri, $resolveData) {
+      return [$resolveUri, $resolveData];
+    };
+    $this->getClient()->setUriAndDataParamsResolver($callable);
+
+    // When
+    [$uri, $responseData] = $this->getClient()->resolveUriAndDataParams('HEAD', $path, $data);
+
+    // Then
+    $this->assertEquals($resolveUri, $uri);
+    $this->assertEquals($resolveData, $responseData);
   }
 }
