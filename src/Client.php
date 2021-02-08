@@ -125,7 +125,7 @@ class Client
           'Accept' => 'application/json',
           'Content-Type' => $this->getContentTypeRequestValue(),
           'User-Agent' => $this->getUserAgent(),
-        ], $this->getAuthHeaders());
+        ], $this->getAuthHeaders($method, $path, $data));
 
         $guzzleClient = new GuzzleClient($clientOptions);
 
@@ -151,16 +151,20 @@ class Client
         }
     }
 
-    public function getAuthHeaders()
+    public function getAuthHeaders($method, $path, $data)
     {
         if (is_array($this->authHeaders)) {
             return $this->authHeaders;
         }
 
+        if (is_callable($this->authHeaders)) {
+          return call_user_func_array($this->authHeaders, [$this, $method, $path, $data]);
+        }
+
         return ['Authorization' => 'Bearer '.$this->getApiKey()];
     }
 
-    public function setAuthHeaders(array $headers)
+    public function setAuthHeaders($headers)
     {
         $this->authHeaders = $headers;
     }

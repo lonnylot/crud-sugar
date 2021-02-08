@@ -181,7 +181,7 @@ class ClientTest extends TestCase {
     $this->getClient()->setApiKey($apiKey);
 
     // When
-    $authHeaders = $this->getClient()->getAuthHeaders();
+    $authHeaders = $this->getClient()->getAuthHeaders(uniqid(), uniqid(), uniqid());
 
     // Then
     $this->assertEquals(['Authorization' => 'Bearer '.$apiKey], $authHeaders);
@@ -195,10 +195,35 @@ class ClientTest extends TestCase {
     $this->getClient()->setAuthHeaders([$authHeaderKey => $apiKey]);
 
     // When
-    $authHeaders = $this->getClient()->getAuthHeaders();
+    $authHeaders = $this->getClient()->getAuthHeaders(uniqid(), uniqid(), uniqid());
 
     // Then
     $this->assertEquals([$authHeaderKey => $apiKey], $authHeaders);
+  }
+
+  public function testSetAuthHeadersWithClosure()
+  {
+    // Given
+    $requestMethod = uniqid();
+    $requestPath = uniqid();
+    $requestData = [
+      uniqid() => uniqid(),
+    ];
+    $responseAuth = uniqid();
+    $callable = function($client, $method, $path, $data) use ($requestMethod, $requestPath, $requestData, $responseAuth) {
+      $this->assertEquals($method, $requestMethod);
+      $this->assertEquals($path, $requestPath);
+      $this->assertEquals($data, $requestData);
+
+      return $responseAuth;
+    };
+    $this->getClient()->setAuthHeaders($callable);
+
+    // When
+    $authHeaders = $this->getClient()->getAuthHeaders($requestMethod, $requestPath, $requestData);
+
+    // Then
+    $this->assertEquals($responseAuth, $authHeaders);
   }
 
   public function testGetContentTypeRequestValue() {
