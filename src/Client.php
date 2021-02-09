@@ -110,7 +110,7 @@ class Client
     {
         [$path, $data] = $this->bindPathParams($path, $data);
 
-        [$uri, $data] = $this->resolveUriAndDataParams($method, $path, $data);
+        [$uri, $resolvedDataParams] = $this->resolveUriAndDataParams($method, $path, $data);
 
         $clientOptions = [
           'base_uri' => $this->getBaseUrl(),
@@ -137,11 +137,11 @@ class Client
             ];
 
             if ($this->getContentTypeRequestValue() === 'application/x-www-form-urlencoded') {
-                $requestData['form_params'] = $data;
+                $requestData['form_params'] = $resolvedDataParams;
             } elseif ($this->getContentTypeRequestValue() === 'multipart/form-data') {
-                $requestData['multipart'] = $data;
+                $requestData['multipart'] = $resolvedDataParams;
             } else {
-                $requestData['body'] = $data;
+                $requestData['body'] = $resolvedDataParams;
             }
             $guzzleResponse = $guzzleClient->request($method, $uri, $requestData);
 
