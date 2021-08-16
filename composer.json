@@ -3,7 +3,7 @@
     "description": "CRUD sugar for REST APIs",
     "type": "library",
     "require": {
-        "guzzlehttp/guzzle": "^6.4",
+        "guzzlehttp/guzzle": "^7.0",
         "illuminate/validation": "^6.6",
         "quazardous/php-bump-version": "^1.0"
     },
