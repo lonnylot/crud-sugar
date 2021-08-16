@@ -1,3 +1,4 @@
+3.0.0: Updated guzzle requirements
 2.1.0: Add ability to get exception from Response
 2.0.1: Pass raw params to getAuthHeaders
 2.0.0: Added ability to pass in and resolve callable to setAuthHeaders
