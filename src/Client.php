@@ -28,6 +28,8 @@ class Client
 
     protected $handler = null;
 
+    protected $customClientOptions = null;
+
     protected $requestStats = [];
 
     protected $validator = null;
@@ -92,6 +94,11 @@ class Client
         return $this->handler;
     }
 
+    public function setClientOptions(array $clientOptions)
+    {
+        $this->customClientOptions = $clientOptions;
+    }
+
     public function getApiKey()
     {
         if (is_null($this->key)) {
@@ -119,6 +126,10 @@ class Client
 
         if (!is_null($this->handler)) {
             $clientOptions['handler'] = $this->handler;
+        }
+
+        if (!is_null($this->customClientOptions)) {
+            $clientOptions = array_merge($clientOptions, $this->customClientOptions);
         }
 
         $headers = array_merge([
