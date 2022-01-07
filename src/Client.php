@@ -151,6 +151,16 @@ class Client
                 $requestData['form_params'] = $resolvedDataParams;
             } elseif ($this->getContentTypeRequestValue() === 'multipart/form-data') {
                 $requestData['multipart'] = $resolvedDataParams;
+
+                /**
+                 * Guzzle needs to generate the Content-Type header so it includes a
+                 * generated 'boundary' field.
+                 * 
+                 * Unset the Content-Type header hear and guzzle will automatically
+                 * use multipart/form-data becase the 'multipart' key is set in the
+                 * $requestData.
+                 */
+                unset($requestData['headers']['Content-Type']);
             } else {
                 $requestData['body'] = $resolvedDataParams;
             }
