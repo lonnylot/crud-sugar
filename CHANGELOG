@@ -1,3 +1,4 @@
+3.2.0: Unset Content-Type when doing multipart so guzzle can auto-generate
 3.1.0: Added ability to set custom guzzle client options
 3.0.0: Updated guzzle requirements
 2.1.0: Add ability to get exception from Response
