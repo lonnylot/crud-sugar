@@ -44,6 +44,8 @@ class Client
 
     protected $uriAndDataParamsResolver = null;
 
+    protected $dataParamModifier = null;
+
     public function setValidatorFactory(Factory $validator)
     {
         $this->validator = $validator;
@@ -262,6 +264,10 @@ class Client
           return call_user_func_array($this->uriAndDataParamsResolver, [$method, $path, $data]);
         }
 
+        if ($this->dataParamModifier) {
+            $data = call_user_func_array($this->dataParamModifier, [$data]);
+        }
+
         $uri = new Uri($path);
 
         switch ($method) {
@@ -288,6 +294,11 @@ class Client
     public function setUriAndDataParamsResolver(callable $callable)
     {
       $this->uriAndDataParamsResolver = $callable;
+    }
+
+    public function setDataParamModifier(callable $callable)
+    {
+        $this->dataParamModifier = $callable;
     }
 
     public function recordStats(TransferStats $stats)
