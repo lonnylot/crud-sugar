@@ -1,3 +1,4 @@
+3.4.0: Use dataParamModifier in bindPathParams
 3.3.0: Added 'setDataParamModifier' to client
 3.2.0: Unset Content-Type when doing multipart so guzzle can auto-generate
 3.1.0: Added ability to set custom guzzle client options
