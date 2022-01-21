@@ -234,6 +234,10 @@ class Client
 
     public function bindPathParams($path, $data)
     {
+        if ($this->dataParamModifier) {
+            $data = call_user_func_array($this->dataParamModifier, [$data]);
+        }
+        
         $bindings = [];
         preg_match_all('/{[\\d\\w]*}/', $path, $bindings);
 
