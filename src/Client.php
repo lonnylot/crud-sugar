@@ -44,6 +44,8 @@ class Client
 
     protected $uriAndDataParamsResolver = null;
 
+    protected $dataParamModifier = null;
+
     public function setValidatorFactory(Factory $validator)
     {
         $this->validator = $validator;
@@ -151,6 +153,16 @@ class Client
                 $requestData['form_params'] = $resolvedDataParams;
             } elseif ($this->getContentTypeRequestValue() === 'multipart/form-data') {
                 $requestData['multipart'] = $resolvedDataParams;
+
+                /**
+                 * Guzzle needs to generate the Content-Type header so it includes a
+                 * generated 'boundary' field.
+                 * 
+                 * Unset the Content-Type header hear and guzzle will automatically
+                 * use multipart/form-data becase the 'multipart' key is set in the
+                 * $requestData.
+                 */
+                unset($requestData['headers']['Content-Type']);
             } else {
                 $requestData['body'] = $resolvedDataParams;
             }
@@ -222,6 +234,10 @@ class Client
 
     public function bindPathParams($path, $data)
     {
+        if ($this->dataParamModifier) {
+            $data = call_user_func_array($this->dataParamModifier, [$data]);
+        }
+        
         $bindings = [];
         preg_match_all('/{[\\d\\w]*}/', $path, $bindings);
 
@@ -252,6 +268,10 @@ class Client
           return call_user_func_array($this->uriAndDataParamsResolver, [$method, $path, $data]);
         }
 
+        if ($this->dataParamModifier) {
+            $data = call_user_func_array($this->dataParamModifier, [$data]);
+        }
+
         $uri = new Uri($path);
 
         switch ($method) {
@@ -278,6 +298,11 @@ class Client
     public function setUriAndDataParamsResolver(callable $callable)
     {
       $this->uriAndDataParamsResolver = $callable;
+    }
+
+    public function setDataParamModifier(callable $callable)
+    {
+        $this->dataParamModifier = $callable;
     }
 
     public function recordStats(TransferStats $stats)

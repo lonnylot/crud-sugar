@@ -1,3 +1,9 @@
+4.1.1: Change how we handle empty path resources
+4.1.0: Added illuminate/validation v8.x to composer
+4.0.0: Add illuminate/validation ^v7.0 to requirements
+3.4.0: Use dataParamModifier in bindPathParams
+3.3.0: Added 'setDataParamModifier' to client
+3.2.0: Unset Content-Type when doing multipart so guzzle can auto-generate
 3.1.0: Added ability to set custom guzzle client options
 3.0.0: Updated guzzle requirements
 2.1.0: Add ability to get exception from Response

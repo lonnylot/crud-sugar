@@ -381,4 +381,26 @@ class ClientTest extends TestCase {
     $this->assertEquals($resolveUri, $uri);
     $this->assertEquals($resolveData, $responseData);
   }
+
+  public function testDataParamModifierReturnsModifiedData()
+  {
+    // Given
+    $path = uniqid();
+    $data = [
+      uniqid() => uniqid(),
+    ];
+    $updateData = [
+      uniqid() => uniqid(),
+    ];
+    $callable = function($data) use ($updateData) {
+      return array_merge($data, $updateData);
+    };
+    $this->getClient()->setDataParamModifier($callable);
+
+    // When
+    [$uri, $responseData] = $this->getClient()->resolveUriAndDataParams('POST', $path, $data);
+
+    // Then
+    $this->assertEquals(json_encode(array_merge($data, $updateData)), $responseData);
+  }
 }
