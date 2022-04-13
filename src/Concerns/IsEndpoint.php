@@ -43,15 +43,15 @@ trait IsEndpoint {
     }
 
     if ($this->needsResourcePath('show')) {
-      $this->resourcePaths['show'] = $this->path.'/{'.$this->resourceKey.'}';
+      $this->resourcePaths['show'] = (strlen($this->path) ? $this->path.'/' : '').'{'.$this->resourceKey.'}';
     }
 
     if ($this->needsResourcePath('update')) {
-      $this->resourcePaths['update'] = $this->path.'/{'.$this->resourceKey.'}';
+      $this->resourcePaths['update'] = (strlen($this->path) ? $this->path.'/' : '').'{'.$this->resourceKey.'}';
     }
 
     if ($this->needsResourcePath('delete')) {
-      $this->resourcePaths['delete'] = $this->path.'/{'.$this->resourceKey.'}';
+      $this->resourcePaths['delete'] = (strlen($this->path) ? $this->path.'/' : '').'{'.$this->resourceKey.'}';
     }
   }
 
